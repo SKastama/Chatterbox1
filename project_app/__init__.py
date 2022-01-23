@@ -1,5 +1,8 @@
-from project_app import app
-from project_app.controllers import users, posts, channels
-
-if __name__ == "__main__":
-    app.run(debug=True)
+from flask import Flask
+app = Flask(__name__)
+app.secret_key = "shhhhhh"
+UPLOAD_FOLDER = 'upload_folder/images'
+ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+app.config['UPLOAD_PATH'] = UPLOAD_FOLDER
+app.config['UPLOAD_EXTENSIONS'] = ALLOWED_EXTENSIONS
+app.config['MAX_CONTENT_LENGTH'] = 2048 * 2048
