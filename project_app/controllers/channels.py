@@ -1,14 +1,14 @@
-from project_app import app
+from project_app import application
 from flask import render_template, request, redirect, session
 from project_app.models.channel import Channel
 from project_app.models.user import User
 from project_app.models.post import Post
 from project_app.models.reply import Reply
 from flask_bcrypt import Bcrypt
-bcrypt = Bcrypt(app)
+bcrypt = Bcrypt(application)
 
-@app.route("/dashboard")
-@app.route("/go_to_channel/<id>")
+@application.route("/dashboard")
+@application.route("/go_to_channel/<id>")
 def dashboard(id=1):
     if "account_logged_in" not in session:
         return redirect("/log_out")
@@ -24,11 +24,11 @@ def dashboard(id=1):
     this_channel = Channel.get_one(data)
     return render_template("dashboard.html", user = account_logged_in, all_users=all_users, all_channels = all_channels, this_channel = this_channel)
 
-@app.route("/to_dashboard")
+@application.route("/to_dashboard")
 def to_dashboard():
     return redirect("/dashboard")
 
-@app.route("/add_channel", methods=["POST"])
+@application.route("/add_channel", methods=["POST"])
 def add_channel():
     if not Channel.validate_channel(request.form):
         return redirect("/dashboard")

@@ -1,6 +1,6 @@
 import os
 from uuid import uuid4
-from project_app import app
+from project_app import application
 from flask import render_template, request, redirect, session, flash, url_for, send_from_directory
 from werkzeug.utils import secure_filename
 from project_app.models.post import Post
@@ -14,9 +14,9 @@ def generate_file_name():
 
 def allowed_file(filename):
     return '.' in filename and \
-        filename.rsplit('.', 1)[1].lower() in app.config['UPLOAD_EXTENSIONS']
+        filename.rsplit('.', 1)[1].lower() in application.config['UPLOAD_EXTENSIONS']
 
-@app.route("/uploads/<id>", methods = ['POST'])
+@application.route("/uploads/<id>", methods = ['POST'])
 def upload_file(id):
     channel_id= id
     if "account_logged_in" not in session:
@@ -34,7 +34,7 @@ def upload_file(id):
                 "filename" : filename
             }
             image_id = Image.add_image(data)
-            file.save(os.path.join(app.static_folder, f"{app.config['UPLOAD_PATH']}/{filename}"))
+            file.save(os.path.join(application.static_folder, f"{application.config['UPLOAD_PATH']}/{filename}"))
             data = {
                 "name" : request.form['name'],
                 "description" : request.form['description'],
@@ -46,7 +46,7 @@ def upload_file(id):
             return redirect(f"/go_to_channel/{ channel_id }")
     return redirect(f"/go_to_channel/{ channel_id }")
 
-@app.route('/profile_page')
+@application.route('/profile_page')
 def user_profile():
     user_data = {
         "id": session['account_logged_in']
@@ -56,11 +56,11 @@ def user_profile():
     all_user_posts = Post.get_all_users_posts(user_data)
     return render_template('profile_page.html', user= account_logged_in, all_user_posts = all_user_posts, all_users= all_users)
 
-@app.route('/user_settings/<int:id>')
+@application.route('/user_settings/<int:id>')
 def user_settings():
     pass
 
-@app.route("/delete/<id>")
+@application.route("/delete/<id>")
 def delete(id):
     data= {
         "id": id
@@ -69,7 +69,7 @@ def delete(id):
 
     return redirect(request.referrer)
 
-@app.route("/like_post/<id>")
+@application.route("/like_post/<id>")
 def like_post(id):
     data= {
         "id": id
@@ -77,7 +77,7 @@ def like_post(id):
     Post.like_post(data)
     return redirect(request.referrer)
 
-@app.route('/add_reply/<int:id>', methods=['POST'])
+@application.route('/add_reply/<int:id>', methods=['POST'])
 def add_reply(id):
     data = {
         "user_id": session['account_logged_in'],
