@@ -1,15 +1,15 @@
 from flask import flash
-from project_app import application
+from project_app import app
 from flask import render_template, redirect, request, session
 from project_app.models.user import User
 from flask_bcrypt import Bcrypt     
-bcrypt = Bcrypt(application)
+bcrypt = Bcrypt(app)
 
-@application.route("/")
+@app.route("/")
 def login_page():
     return render_template("login.html")
 
-@application.route("/register_user", methods=["POST"])
+@app.route("/register_user", methods=["POST"])
 def register_user():
     if not User.validate_user(request.form):
         return redirect("/")
@@ -25,7 +25,7 @@ def register_user():
     session["account_logged_in"] = user_id
     return redirect("/dashboard")
 
-@application.route("/login_user", methods=["POST"])
+@app.route("/login_user", methods=["POST"])
 def login():
     data = {
         "email" : request.form["email"]
@@ -40,7 +40,7 @@ def login():
     session["account_logged_in"] = user_data.id
     return redirect("/dashboard")
 
-@application.route("/log_out")
+@app.route("/log_out")
 def log_out():
     session.clear()
     return redirect("/")
